@@ -61,6 +61,12 @@ class NotesAdapter(private val fragment: Fragment = Fragment(), private val note
         notesList.remove(selectedNote)
     }
 
+    fun replace(note: Note?, selectedPosition: Int) {
+        if (note != null) {
+            notesList[selectedPosition] = note
+        }
+    }
+
     class NotesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val simpleDate: SimpleDateFormat = SimpleDateFormat("HH:mm, dd.MM.yyyy", Locale.getDefault())
 

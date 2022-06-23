@@ -55,4 +55,20 @@ object NotesRepositoryImpl : NotesRepository {
             callback.onSuccess(null)
         })
     }
+
+    override fun edit(note: Note, title: String, message: String, callback: Callback<Note>) {
+        executor.execute(Runnable {
+            Thread.sleep(1500L)
+        })
+
+
+
+        val editedNote = Note(note.id, title, message, note.createdAt)
+        val index = data.indexOf(note)
+        data[index] = editedNote
+
+        handler.post(Runnable {
+            callback.onSuccess(editedNote)
+        })
+    }
 }

@@ -87,6 +87,14 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
 
             })
 
+        parentFragmentManager.setFragmentResultListener(NoteAddBottomDialogFragment.EDIT_NOTE_RESULT_KEY,
+        viewLifecycleOwner, FragmentResultListener { requestKey, result ->
+                val note: Note? = result.getParcelable(NoteAddBottomDialogFragment.ARG_NOTE)
+
+                adapter.replace(note, selectedPosition)
+                adapter.notifyItemChanged(selectedPosition)
+            })
+
 
     }
 
@@ -121,7 +129,10 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
                 return true
             }
             R.id.action_edit -> {
-                Toast.makeText(requireContext(), "Edited", Toast.LENGTH_SHORT).show()
+                selectedNote?.let {
+                    NoteAddBottomDialogFragment().editInstance(it)
+                        .show(parentFragmentManager, "Edited note")
+                }
                 return true
             }
         }

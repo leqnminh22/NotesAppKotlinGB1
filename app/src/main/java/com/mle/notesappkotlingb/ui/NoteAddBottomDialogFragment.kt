@@ -17,10 +17,12 @@ class NoteAddBottomDialogFragment : BottomSheetDialogFragment() {
     lateinit var title: TextInputEditText
     lateinit var message: TextInputEditText
     lateinit var btnSave: MaterialButton
+    private var noteToEdit: Note? = null
 
     companion object {
         const val ARG_NOTE: String = "ARG_NOTE"
         const val ADD_NOTE_RESULT_KEY: String = "ADD_NOTE_RESULT_KEY"
+        const val EDIT_NOTE_RESULT_KEY: String = "EDIT_NOTE_RESULT_KEY"
     }
 
 
@@ -40,34 +42,76 @@ class NoteAddBottomDialogFragment : BottomSheetDialogFragment() {
         return fragment
     }
 
+    fun editInstance(note: Note) = NoteAddBottomDialogFragment().apply{
+        val args = Bundle()
+        args.putParcelable(ARG_NOTE, note)
+
+        val fragment = NoteAddBottomDialogFragment()
+        fragment.arguments = args
+        return fragment
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
         init(view)
+
+
+        if(requireArguments().containsKey(ARG_NOTE)) {
+            noteToEdit = arguments?.getParcelable(ARG_NOTE)
+        }
+        if(noteToEdit != null) {
+            title.setText(noteToEdit?.title)
+            message.setText(noteToEdit?.message)
+        }
+
+        val finalNoteToEdit = noteToEdit
+
         btnSave.setOnClickListener {
             btnSave.isEnabled = false
-            NotesRepositoryImpl.add(
-                title.text.toString(),
-                message.text.toString(),
-                object : Callback<Note> {
+
+            if(finalNoteToEdit != null){
+                NotesRepositoryImpl.edit(finalNoteToEdit, title.text.toString(), message.text.toString(), object : Callback<Note> {
                     override fun onSuccess(data: Note?) {
-                        btnSave.isEnabled = true
 
                         val bundle = Bundle()
                         bundle.putParcelable(ARG_NOTE, data)
-
-                        parentFragmentManager.setFragmentResult(ADD_NOTE_RESULT_KEY, bundle)
+                        parentFragmentManager.setFragmentResult(EDIT_NOTE_RESULT_KEY, bundle)
+                        btnSave.isEnabled = true
                         dismiss()
-
                     }
 
                     override fun onError(e: Exception) {
+
                         btnSave.isEnabled = true
+
                     }
 
                 })
+
+            } else{
+                NotesRepositoryImpl.add(
+                    title.text.toString(),
+                    message.text.toString(),
+                    object : Callback<Note> {
+                        override fun onSuccess(data: Note?) {
+                            btnSave.isEnabled = true
+
+                            val bundle = Bundle()
+                            bundle.putParcelable(ARG_NOTE, data)
+
+                            parentFragmentManager.setFragmentResult(ADD_NOTE_RESULT_KEY, bundle)
+                            dismiss()
+
+                        }
+
+                        override fun onError(e: Exception) {
+                            btnSave.isEnabled = true
+                        }
+
+                    })
+            }
+
         }
 
 
