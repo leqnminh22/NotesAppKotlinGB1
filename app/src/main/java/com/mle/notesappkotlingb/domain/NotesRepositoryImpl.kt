@@ -15,14 +15,9 @@ object NotesRepositoryImpl : NotesRepository {
 
     init {
 
-        data.add(Note(UUID.randomUUID().toString(), "Title 1", "Message 1", Date()))
-        data.add(Note(UUID.randomUUID().toString(), "Title 2", "Message 2", Date()))
-        data.add(Note(UUID.randomUUID().toString(), "Title 3", "Message 3", Date()))
-        data.add(Note(UUID.randomUUID().toString(), "Title 4", "Message 4", Date()))
-        data.add(Note(UUID.randomUUID().toString(), "Title 5", "Message 5", Date()))
-        data.add(Note(UUID.randomUUID().toString(), "Title 6", "Message 6", Date()))
-        data.add(Note(UUID.randomUUID().toString(), "Title 7", "Message 7", Date()))
-        data.add(Note(UUID.randomUUID().toString(), "Title 8", "Message 8", Date()))
+        for (i in 1..5) {
+            data.add(Note(UUID.randomUUID().toString(), "Title 1", "Message 1", Date()))
+        }
 
     }
 
@@ -47,6 +42,17 @@ object NotesRepositoryImpl : NotesRepository {
         handler.post(Runnable {
 
             callback.onSuccess(note)
+        })
+    }
+
+    override fun remove(note: Note, callback: Callback<Unit>) {
+        executor.execute(Runnable {
+            Thread.sleep(1500L)
+        })
+
+        data.remove(note)
+        handler.post(Runnable {
+            callback.onSuccess(null)
         })
     }
 }

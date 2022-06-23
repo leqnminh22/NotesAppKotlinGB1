@@ -44,7 +44,6 @@ class NoteAddBottomDialogFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        arguments
 
         init(view)
         btnSave.setOnClickListener {
@@ -53,7 +52,7 @@ class NoteAddBottomDialogFragment : BottomSheetDialogFragment() {
                 title.text.toString(),
                 message.text.toString(),
                 object : Callback<Note> {
-                    override fun onSuccess(data: Note) {
+                    override fun onSuccess(data: Note?) {
                         btnSave.isEnabled = true
 
                         val bundle = Bundle()

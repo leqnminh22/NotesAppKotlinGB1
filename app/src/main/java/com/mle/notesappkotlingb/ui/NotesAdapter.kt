@@ -3,6 +3,7 @@ package com.mle.notesappkotlingb.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.mle.notesappkotlingb.R
 import com.mle.notesappkotlingb.databinding.ItemNoteBinding
@@ -12,7 +13,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class NotesAdapter(private val noteClicked: OnNoteClickListener) : RecyclerView.Adapter<NotesAdapter.NotesViewHolder>() {
+class NotesAdapter(private val fragment: Fragment = Fragment(), private val noteClicked: OnNoteClickListener) : RecyclerView.Adapter<NotesAdapter.NotesViewHolder>() {
 
     private val notesList = ArrayList<Note>()
 
@@ -36,6 +37,15 @@ class NotesAdapter(private val noteClicked: OnNoteClickListener) : RecyclerView.
         holder.binding.cardView.setOnClickListener {
             noteClicked.onNoteClicked(notesList[position])
         }
+
+        fragment.registerForContextMenu(holder.binding.cardView)
+
+        holder.binding.cardView.setOnLongClickListener {
+            holder.binding.cardView.showContextMenu()
+            noteClicked.onLongNoteClicked(notesList[position], position)
+            return@setOnLongClickListener true
+        }
+
     }
 
     override fun getItemCount(): Int {
@@ -47,9 +57,12 @@ class NotesAdapter(private val noteClicked: OnNoteClickListener) : RecyclerView.
         return notesList.size -1
     }
 
+    fun remove(selectedNote: Note) {
+        notesList.remove(selectedNote)
+    }
+
     class NotesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val simpleDate: SimpleDateFormat = SimpleDateFormat("HH:mm, dd.MM.yyyy", Locale.getDefault())
-
 
         val binding = ItemNoteBinding.bind(itemView)
 
@@ -57,6 +70,8 @@ class NotesAdapter(private val noteClicked: OnNoteClickListener) : RecyclerView.
             noteTitle.text = note.title
             noteMessage.text = note.message
             noteDate.text = simpleDate.format(note.createdAt)
+
+
         }
     }
 

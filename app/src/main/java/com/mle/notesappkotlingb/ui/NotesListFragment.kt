@@ -1,9 +1,7 @@
 package com.mle.notesappkotlingb.ui
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
@@ -19,6 +17,21 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
 
     private var _binding: FragmentNotesListBinding? = null
     private val binding get() = _binding!!
+
+    private var selectedNote: Note? = null
+    private var selectedPosition: Int = 0
+    private var adapter: NotesAdapter = NotesAdapter(this, object : OnNoteClickListener{
+        override fun onNoteClicked(note: Note) {
+            Toast.makeText(requireContext(), note.title, Toast.LENGTH_SHORT).show()
+        }
+
+        override fun onLongNoteClicked(note: Note, position: Int) {
+            selectedNote = note
+            selectedPosition = position
+        }
+
+    })
+
 
 
     override fun onCreateView(
@@ -38,14 +51,8 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
         notesList.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
-        val adapter = NotesAdapter(object : OnNoteClickListener {
-            override fun onNoteClicked(note: Note) {
-                Toast.makeText(requireContext(), note.title, Toast.LENGTH_SHORT).show()
-            }
-        })
         notesList.adapter = adapter
 
-        adapter
 
 
         val progressBar = binding.progressBar
@@ -53,8 +60,10 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
 
         // получить список заметок
         NotesRepositoryImpl.getAll(object : Callback<List<Note>> {
-            override fun onSuccess(data: List<Note>) {
-                adapter.setData(data)
+            override fun onSuccess(data: List<Note>?) {
+                if (data != null) {
+                    adapter.setData(data)
+                }
                 adapter.notifyDataSetChanged()
                 progressBar.visibility = View.GONE
             }
@@ -79,6 +88,45 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
             })
 
 
+    }
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+
+        val menuInflater = requireActivity().menuInflater
+        menuInflater.inflate(R.menu.menu_context, menu)
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+
+            R.id.action_delete -> {
+                binding.progressBar.visibility = View.VISIBLE
+                selectedNote?.let {
+                    NotesRepositoryImpl.remove(it, object : Callback<Unit> {
+                        override fun onSuccess(data: Unit?) {
+                            adapter.remove(selectedNote!!)
+                            adapter.notifyItemRemoved(selectedPosition)
+
+                            binding.progressBar.visibility = View.GONE
+                        }
+
+                        override fun onError(e: Exception) {
+                            binding.progressBar.visibility = View.GONE
+                        }
+
+                    })
+                }
+                return true
+            }
+            R.id.action_edit -> {
+                Toast.makeText(requireContext(), "Edited", Toast.LENGTH_SHORT).show()
+                return true
+            }
+        }
+
+        return super.onContextItemSelected(item)
     }
 
     override fun onDestroy() {
