@@ -7,20 +7,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mle.notesappkotlingb.R
 import com.mle.notesappkotlingb.databinding.ItemNoteBinding
 import com.mle.notesappkotlingb.domain.Note
+import com.mle.notesappkotlingb.domain.OnNoteClickListener
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class NotesAdapter() : RecyclerView.Adapter<NotesAdapter.NotesViewHolder>() {
+class NotesAdapter(private val noteClicked: OnNoteClickListener) : RecyclerView.Adapter<NotesAdapter.NotesViewHolder>() {
 
-
-    private val simpleDate: SimpleDateFormat = SimpleDateFormat("dd.MM, HH.mm", Locale.getDefault())
     private val notesList = ArrayList<Note>()
 
-    interface OnNoteClickListener {
-        fun onNoteClicked(note: Note)
-    }
-    lateinit var noteClicked: OnNoteClickListener
+
 
     fun setData(notes: Collection<Note>) {
         notesList.addAll(notes)
@@ -35,8 +31,9 @@ class NotesAdapter() : RecyclerView.Adapter<NotesAdapter.NotesViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: NotesViewHolder, position: Int) {
+
         holder.bind(notesList[position])
-        holder.binding.cardView.setOnClickListener{
+        holder.binding.cardView.setOnClickListener {
             noteClicked.onNoteClicked(notesList[position])
         }
     }
@@ -45,14 +42,21 @@ class NotesAdapter() : RecyclerView.Adapter<NotesAdapter.NotesViewHolder>() {
         return notesList.size
     }
 
+    fun addNote(note: Note): Int {
+        notesList.add(note)
+        return notesList.size -1
+    }
+
     class NotesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val simpleDate: SimpleDateFormat = SimpleDateFormat("HH:mm, dd.MM.yyyy", Locale.getDefault())
+
 
         val binding = ItemNoteBinding.bind(itemView)
 
         fun bind(note: Note) = with(binding) {
             noteTitle.text = note.title
             noteMessage.text = note.message
-            noteDate.text = note.createdAt.toString()
+            noteDate.text = simpleDate.format(note.createdAt)
         }
     }
 
