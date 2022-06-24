@@ -25,7 +25,6 @@ class NoteAddBottomDialogFragment : BottomSheetDialogFragment() {
         const val EDIT_NOTE_RESULT_KEY: String = "EDIT_NOTE_RESULT_KEY"
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -48,14 +47,12 @@ class NoteAddBottomDialogFragment : BottomSheetDialogFragment() {
 
         val fragment = NoteAddBottomDialogFragment()
         fragment.arguments = args
-        return fragment
-    }
+        return fragment    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init(view)
-
 
         if(requireArguments().containsKey(ARG_NOTE)) {
             noteToEdit = arguments?.getParcelable(ARG_NOTE)
@@ -82,14 +79,11 @@ class NoteAddBottomDialogFragment : BottomSheetDialogFragment() {
                     }
 
                     override fun onError(e: Exception) {
-
                         btnSave.isEnabled = true
-
                     }
-
                 })
 
-            } else{
+            } else {
                 NotesRepositoryImpl.add(
                     title.text.toString(),
                     message.text.toString(),
@@ -102,19 +96,14 @@ class NoteAddBottomDialogFragment : BottomSheetDialogFragment() {
 
                             parentFragmentManager.setFragmentResult(ADD_NOTE_RESULT_KEY, bundle)
                             dismiss()
-
                         }
 
                         override fun onError(e: Exception) {
                             btnSave.isEnabled = true
                         }
-
                     })
             }
-
         }
-
-
     }
 
     private fun init(view: View) {

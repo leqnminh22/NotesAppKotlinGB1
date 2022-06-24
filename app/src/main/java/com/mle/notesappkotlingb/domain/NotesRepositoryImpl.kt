@@ -14,11 +14,9 @@ object NotesRepositoryImpl : NotesRepository {
     private val handler = Handler(Looper.getMainLooper())
 
     init {
-
         for (i in 1..5) {
             data.add(Note(UUID.randomUUID().toString(), "Title 1", "Message 1", Date()))
         }
-
     }
 
 
@@ -30,7 +28,6 @@ object NotesRepositoryImpl : NotesRepository {
         handler.post(Runnable {
             callback.onSuccess(data)
         })
-
     }
 
     override fun add(title: String, message: String, callback: Callback<Note>) {
@@ -60,8 +57,6 @@ object NotesRepositoryImpl : NotesRepository {
         executor.execute(Runnable {
             Thread.sleep(1500L)
         })
-
-
 
         val editedNote = Note(note.id, title, message, note.createdAt)
         val index = data.indexOf(note)

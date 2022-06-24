@@ -17,8 +17,6 @@ class NotesAdapter(private val fragment: Fragment = Fragment(), private val note
 
     private val notesList = ArrayList<Note>()
 
-
-
     fun setData(notes: Collection<Note>) {
         notesList.addAll(notes)
     }
@@ -45,7 +43,6 @@ class NotesAdapter(private val fragment: Fragment = Fragment(), private val note
             noteClicked.onLongNoteClicked(notesList[position], position)
             return@setOnLongClickListener true
         }
-
     }
 
     override fun getItemCount(): Int {
@@ -76,9 +73,6 @@ class NotesAdapter(private val fragment: Fragment = Fragment(), private val note
             noteTitle.text = note.title
             noteMessage.text = note.message
             noteDate.text = simpleDate.format(note.createdAt)
-
-
         }
     }
-
 }

@@ -29,7 +29,6 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
             selectedNote = note
             selectedPosition = position
         }
-
     })
 
 
@@ -52,8 +51,6 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         notesList.adapter = adapter
-
-
 
         val progressBar = binding.progressBar
         progressBar.visibility = View.VISIBLE
@@ -84,7 +81,6 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
                     val index = adapter.addNote(note)
                     adapter.notifyItemInserted(index)
                 }
-
             })
 
         parentFragmentManager.setFragmentResultListener(NoteAddBottomDialogFragment.EDIT_NOTE_RESULT_KEY,
@@ -94,8 +90,6 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
                 adapter.replace(note, selectedPosition)
                 adapter.notifyItemChanged(selectedPosition)
             })
-
-
     }
 
     override fun onCreateContextMenu(
@@ -121,13 +115,13 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
                         }
 
                         override fun onError(e: Exception) {
-                            binding.progressBar.visibility = View.GONE
-                        }
+                            binding.progressBar.visibility = View.GONE                        }
 
                     })
                 }
                 return true
             }
+
             R.id.action_edit -> {
                 selectedNote?.let {
                     NoteAddBottomDialogFragment().editInstance(it)
@@ -136,7 +130,6 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
                 return true
             }
         }
-
         return super.onContextItemSelected(item)
     }
 

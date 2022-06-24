@@ -32,15 +32,13 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-
-
     }
+
     private fun showNotes(){
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.container, NotesListFragment())
             .commit()
-
     }
 
     private fun showNotesInfo() {
@@ -48,6 +46,5 @@ class MainActivity : AppCompatActivity() {
             .beginTransaction()
             .replace(R.id.container, NotesInfoFragment())
             .commit()
-
     }
 }
