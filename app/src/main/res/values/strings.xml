@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">NotesAppKotlinGB</string>
+    <string name="notes">Notes</string>
+    <string name="info">Info</string>
+    <string name="title">Title</string>
+    <string name="message">Message</string>
+    <string name="save">Save</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>
